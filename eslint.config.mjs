@@ -3,24 +3,22 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
-import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 export default defineConfig([
   {
+    ignores: ["tsconfig.json"],
+  },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
-    plugins: { js },
     extends: ["js/recommended"],
     languageOptions: { globals: globals.node },
   },
-  {
-    ignores: ["tsconfig.json"],
-  },
-  tseslint.configs.recommended,
   {
     rules: {
       "@typescript-eslint/no-explicit-any": "error",
     },
   },
-  eslintConfigPrettier,
   eslintPluginPrettierRecommended,
 ]);
