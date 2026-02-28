@@ -12,7 +12,6 @@ export default defineConfig([
   ...tseslint.configs.recommended,
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
-    extends: ["js/recommended"],
     languageOptions: { globals: globals.node },
   },
   {

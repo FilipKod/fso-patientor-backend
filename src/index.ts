@@ -33,6 +33,17 @@ router.get(
   },
 );
 
+router.get("/api/patients/:id", (req, res: Response<PatientEntry | string>) => {
+  const id = req.params.id;
+  const patient = patientService.getPatient(id);
+
+  if (patient) {
+    return res.json(patient);
+  } else {
+    return res.status(404).send("unknown patient");
+  }
+});
+
 router.post(
   "/api/patients",
   newPatientParser,

@@ -20,8 +20,17 @@ export interface PatientEntry {
   ssn: string;
   gender: Gender;
   occupation: string;
+  entries: string[];
 }
 
-export type NonSensitivePatientEntry = Omit<PatientEntry, "ssn">;
+export type NonSensitivePatientEntry = Omit<PatientEntry, "ssn" | "entries">;
 
 export type NewPatientEntry = z.infer<typeof NewPatientEntrySchema>;
+
+export interface Entry {
+  id: string;
+  description: string;
+  createAt: string;
+  diagnoseCode: string;
+  specialist: string;
+}
