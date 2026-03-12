@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { NewPatientEntrySchema } from "./services/toNewPatientEntry";
+import { EntrySchema, NewEntrySchema } from "./services/toNewEntry";
 
 export enum Gender {
   Male = "male",
@@ -34,43 +35,6 @@ export type NonSensitivePatientEntry = Omit<PatientEntry, "ssn" | "entries">;
 
 export type NewPatientEntry = z.infer<typeof NewPatientEntrySchema>;
 
-interface BaseEntry {
-  id: string;
-  description: string;
-  date: string;
-  specialist: string;
-  diagnosisCodes?: Array<DiagnosesEntry["code"]>;
-}
+export type Entry = z.infer<typeof EntrySchema>;
 
-interface HospitalEntry extends BaseEntry {
-  type: "Hospital";
-  discharge: {
-    date: string;
-    criteria: string;
-  };
-}
-
-interface OccupationalHealthcareEntry extends BaseEntry {
-  type: "OccupationalHealthcare";
-  employerName: string;
-  sickLeave?: {
-    startDate: string;
-    endDate: string;
-  };
-}
-
-interface HealthCheckEntry extends BaseEntry {
-  type: "HealthCheck";
-  healthCheckRating: HealthCheckRating;
-}
-
-export type Entry =
-  | HealthCheckEntry
-  | HospitalEntry
-  | OccupationalHealthcareEntry;
-
-type UnionOmit<T, K extends string | number | symbol> = T extends unknown
-  ? Omit<T, K>
-  : never;
-
-export type EntryWithoutId = UnionOmit<Entry, "id">;
+export type NewEntry = z.infer<typeof NewEntrySchema>;

@@ -2,13 +2,19 @@ import express, { Response, Request } from "express";
 import cors from "cors";
 import {
   DiagnosesEntry,
+  NewEntry,
   NewPatientEntry,
   NonSensitivePatientEntry,
   PatientEntry,
 } from "./types";
 import diagnosesService from "./services/diagnosesService";
 import patientService from "./services/patientService";
-import { errorMiddleware, newPatientParser } from "./utils";
+import {
+  errorMiddleware,
+  newEntriesParser,
+  newPatientParser,
+  NotFoundError,
+} from "./utils";
 
 const app = express();
 const router = express.Router();
@@ -53,6 +59,25 @@ router.post(
   ) => {
     const addNewPatient = patientService.addPatient(req.body);
     return res.json(addNewPatient);
+  },
+);
+
+router.post(
+  "/api/patients/:id/entries",
+  newEntriesParser,
+  (req: Request<{ id: string }, unknown, NewEntry>, res) => {
+    const { id } = req.params;
+    try {
+      const entry = req.body;
+      const updatedPatient = patientService.addEntry(id, entry);
+      return res.json(updatedPatient);
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        return res.status(404).json({ error: error.message });
+      } else {
+        return res.status(500).json({ error: "Internal server error." });
+      }
+    }
   },
 );
 

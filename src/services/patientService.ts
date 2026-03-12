@@ -4,7 +4,10 @@ import {
   PatientEntry,
   NonSensitivePatientEntry,
   NewPatientEntry,
+  Entry,
+  NewEntry,
 } from "../types.js";
+import { NotFoundError } from "../utils";
 
 const getEntries = (): PatientEntry[] => {
   return patientsData;
@@ -44,9 +47,23 @@ const getPatient = (id: string): PatientEntry | undefined => {
   };
 };
 
+const addEntry = (id: string, entry: NewEntry): PatientEntry => {
+  const patient = patientsData.find((p) => p.id === id);
+  if (!patient) {
+    throw new NotFoundError("Patient not found");
+  }
+  const newEntry: Entry = {
+    id: uuid(),
+    ...entry,
+  };
+  patient.entries.push(newEntry);
+  return patient;
+};
+
 export default {
   getEntries,
   getNonSensitiveEntries,
   addPatient,
   getPatient,
+  addEntry,
 };
